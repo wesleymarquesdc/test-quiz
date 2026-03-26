@@ -125,3 +125,29 @@ def test_correct_selected_incorrect():
     correct_selected_choices = set(question.correct_selected_choices([questionB.id]))
 
     assert set() == correct_selected_choices
+
+@pytest.fixture
+def data():
+    return Question(title='q1', max_selections=2)
+
+def test_correct_selected_choices_multiple_correct(data):
+    data.add_choice('a', True)
+    data.add_choice('b', True)
+
+    questionA = data.choices[0]
+    questionB = data.choices[1]
+
+    correct_selected_choices = set(data.correct_selected_choices([questionA.id, questionB.id]))
+
+    assert {questionA.id, questionB.id} == correct_selected_choices
+
+
+def test_correct_selected_choices_partial(data):
+    data.add_choice('a', True)
+    data.add_choice('b', True)
+
+    questionA = data.choices[0]
+
+    correct_selected_choices = set(data.correct_selected_choices([questionA.id]))
+
+    assert {questionA.id} == correct_selected_choices
